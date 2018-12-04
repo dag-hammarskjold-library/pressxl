@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% macro render_pagination(pagination) %}
+  <ul class="pagination">
+  {%- for page in pagination.iter_pages() %}
+    {% if page %}
+      {% if page != pagination.page %}
+        <li class="page-item"><a class="page-link" href="{{ url_for_other_page(page) }}">{{ page }}</a></li>
+      {% else %}
+        <li class="page-item"><a class="page-link disabled">{{ page }}</a></li>
+      {% endif %}
+    {% else %}
+      <span class="ellipsis">…</span>
+    {% endif %}
+  {%- endfor %}
+  {% if pagination.has_next %}
+    <li class="page-item"><a class="page-link" href="{{ url_for_other_page(pagination.page + 1)
+      }}">Next &raquo;</a></li>
+  {% endif %}
+    </ul>
+{% endmacro %}
+
+<div class="container">
+    {% for record in records %}
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title"><a href="{{ url_for('.get_by_id', id=record['id']) }}?lang={{lang}}">{{ record['title'] }}</a></h5>
+            <h6 class="card-subtitle mb-2 text-muted">{{ record['published'] }}</h6>
+            <p class="card-text">{{ record['summary']|safe }}</p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+<div class="container">
+    {{ render_pagination(pagination) }}
+</div>
+
+{% endblock %}
